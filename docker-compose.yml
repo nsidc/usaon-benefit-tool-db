@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: "nsidc/usaon-benefit-tool-db:${USAON_BENEFIT_TOOL_DB_VERSION:-build}"
+    user: "${UID:-1000}:${GID:-1000}"
+    container_name: "db"
+    build: "."
+    command: ["postgres", "-c", "log_statement=none"]
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
+    volumes:
+      # Live data
+      - "${LOCAL_DB_STORAGE_DIR}:/data/db"
+      - "${LOG_DIR}:/var/log/postgresql:rw"
+      # TODO: backups locations
+    restart: "unless-stopped"
+    logging:
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  adminer:
+    image: "adminer:4.8.1"
+    container_name: "adminer"
+    ports:
+      - "80:8080"
+    restart: "unless-stopped"
+    logging:
+      options:
+        max-size: "20m"
+        max-file: "5"
