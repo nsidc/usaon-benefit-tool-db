@@ -18,7 +18,7 @@ if [ -z "$bkpfile" ]; then
 fi
 
 # restart to boot any active sesssions
-docker-compose restart
+docker compose restart
 $SCRIPTPATH/wait_for_db.sh
 
 docker exec db dropdb usaon-benefit-tool || true
