@@ -6,12 +6,14 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 if [ -n "$1" ]; then
     bkpfile="$1"
-elif [ -n "${BACKUP_DIR}" ]; then
-    bkpfile="$(find $BACKUP_DIR -name "usaon-benefit-tool-db-backup.sql.gz*" | sort -r | head -1)"
 fi
 
 if [ -z "$bkpfile" ]; then
-    echo "Please pass a backup file as argument or set \$BACKUP_DIR and ensure a backup file exists there"
+    echo "Please pass a path to a backup file as argument."
+
+    if [ -n "$BACKUP_DIR" ]; then
+        echo "They can most likely be found in ${BACKUP_DIR}."
+    fi
     exit 1
 fi
 
@@ -22,5 +24,5 @@ $SCRIPTPATH/wait_for_db.sh
 docker exec db dropdb usaon-benefit-tool || true
 docker exec db createdb usaon-benefit-tool 
 
-gunzip -c $bkpfile | docker exec --interactive db psql --username dbuser
+gunzip -c $bkpfile | docker exec --interactive db psql --username "$DB_USER"
 echo "Restored from $bkpfile."
