@@ -21,8 +21,8 @@ fi
 docker compose restart
 $SCRIPTPATH/wait_for_db.sh
 
-docker exec db dropdb usaon-benefit-tool || true
-docker exec db createdb usaon-benefit-tool 
+docker exec db dropdb --user="${DB_USER}" usaon-benefit-tool || true
+docker exec db createdb --user="${DB_USER}" usaon-benefit-tool 
 
 gunzip -c $bkpfile | docker exec --interactive db psql --username "$DB_USER"
 echo "Restored from $bkpfile."
