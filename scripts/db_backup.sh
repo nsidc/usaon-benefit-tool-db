@@ -17,5 +17,5 @@ else
     bkpfile="$BACKUP_DIR/usaon-benefit-tool-db-backup.sql.gz"
 fi
 
-docker exec --tty db pg_dump --clean --username "$DB_USER" | gzip > $bkpfile
+docker exec --tty db pg_dump --clean --username "$DB_USER" usaon-benefit-tool | gzip > $bkpfile
 echo "Backup saved to $bkpfile."
